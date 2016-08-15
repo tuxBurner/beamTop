@@ -1,0 +1,14 @@
+{
+  "name": "beamtop",
+  "version": "1.0.0",
+  "description": "TableTop for a beamer",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "tuxBurner <sebasth@gmx.de>",
+  "license": "ISC",
+  "devDependencies": {
+    "grunt": "^1.0.1"
+  }
+}
