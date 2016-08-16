@@ -53,7 +53,7 @@ beamTop.drawStuff = function() {
       width: beamTop.battlfield.dims.width,
       height: beamTop.battlfield.dims.height,
       hasControls: false,
-      selection: false,
+      selectable: false,
       hasBorders: true,
       borderColor: 'red',
       borderSize: 5,
