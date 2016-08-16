@@ -1,6 +1,6 @@
 var beamTopCfg = {
   battlfield: {
-    background : 'images/backgrounds/testbg.jpg',
+    background: 'images/backgrounds/testbg.jpg',
     width: 90,
     height: 90
   },
@@ -23,26 +23,26 @@ beamTop.resizeCanvas = function() {
 
   var canvas = document.getElementById('canvas');
 
-        beamTop.width =window.innerWidth;
-        beamTop.height= window.innerHeight;
+  beamTop.width = window.innerWidth;
+  beamTop.height = window.innerHeight;
 
-        canvas.width = beamTop.width;
-        canvas.height = beamTop.height;
+  canvas.width = beamTop.width;
+  canvas.height = beamTop.height;
 
-        /**
-         * Your drawings need to be inside this function otherwise they will be reset when
-         * you resize the browser window and the canvas goes will be cleared.
-         */
-        beamTop.drawStuff();
+  /**
+   * Your drawings need to be inside this function otherwise they will be reset when
+   * you resize the browser window and the canvas goes will be cleared.
+   */
+  beamTop.drawStuff();
 }
 
 
 beamTop.drawStuff = function() {
 
 
-   beamTop.canvas =  new fabric.Canvas('canvas',{
-      backgroundColor: 'rgb(0,0,0)'
-   });
+  beamTop.canvas = new fabric.Canvas('canvas', {
+    backgroundColor: 'rgb(0,0,0)'
+  });
 
   beamTop.calculateBattleFieldDims();
 
@@ -50,12 +50,15 @@ beamTop.drawStuff = function() {
     oImg.set({
       top: beamTop.battlfield.dims.y0,
       left: beamTop.battlfield.dims.x0,
-      width:  beamTop.battlfield.dims.width,
+      width: beamTop.battlfield.dims.width,
       height: beamTop.battlfield.dims.height,
       hasControls: false,
       selection: false,
-      hasBorders: true,borderColor: 'red',borderSize: 5,
-      lockMovementY: true,lockMovementX: true
+      hasBorders: true,
+      borderColor: 'red',
+      borderSize: 5,
+      lockMovementY: true,
+      lockMovementX: true
     });
     beamTop.fabric.background = oImg;
     beamTop.canvas.add(oImg);
@@ -71,10 +74,10 @@ beamTop.calculateBattleFieldDims = function() {
   beamTop.battlfield = {};
   beamTop.battlfield.dims = {};
 
-  beamTop.battlfield.dims.width = beamTopCfg.battlfield.width*ratio;
-  beamTop.battlfield.dims.height = beamTopCfg.battlfield.height*ratio;
-  beamTop.battlfield.dims.x0 =(beamTop.width- beamTop.battlfield.dims.width)/2;
-  beamTop.battlfield.dims.y0 = (beamTop.height - beamTop.battlfield.dims.height)/2;
+  beamTop.battlfield.dims.width = beamTopCfg.battlfield.width * ratio;
+  beamTop.battlfield.dims.height = beamTopCfg.battlfield.height * ratio;
+  beamTop.battlfield.dims.x0 = (beamTop.width - beamTop.battlfield.dims.width) / 2;
+  beamTop.battlfield.dims.y0 = (beamTop.height - beamTop.battlfield.dims.height) / 2;
 }
 
 beamTop.drawGrid = function() {
@@ -83,7 +86,7 @@ beamTop.drawGrid = function() {
   var gridWidth = beamTop.battlfield.dims.width; // <= you must define this with final grid width
   var gridHeight = beamTop.battlfield.dims.height; // <= you must define this with final grid height
 
-  var gridSize = beamTopCfg.tileSize*beamTopCfg.tileRatio; // define grid size
+  var gridSize = beamTopCfg.tileSize * beamTopCfg.tileRatio; // define grid size
 
 
   // calculate the position of the grid so it is in the middle
@@ -91,21 +94,29 @@ beamTop.drawGrid = function() {
   var gridPosY = beamTop.battlfield.dims.y0;
 
   // to manipulate grid after creation
-  var oGridGroup = new fabric.Group([], {left: gridPosX, top: gridPosY});
+  var oGridGroup = new fabric.Group([], {
+    left: gridPosX,
+    top: gridPosY
+  });
 
 
 
   // define presentation option of grid
-  var lineOption = {stroke: 'rgba(255,255,255,.4)', strokeWidth: 1, selectable:false, strokeDashArray: [3, 3]};
+  var lineOption = {
+    stroke: 'rgba(255,255,255,.4)',
+    strokeWidth: 1,
+    selectable: false,
+    strokeDashArray: [3, 3]
+  };
 
   // do in two steps to limit the calculations
   // first loop for vertical line
-  for(var i = Math.ceil(gridWidth/gridSize); i--;){
-    oGridGroup.add( new fabric.Line([gridSize*i, 0, gridSize*i, gridHeight], lineOption) );
+  for (var i = Math.ceil(gridWidth / gridSize); i--;) {
+    oGridGroup.add(new fabric.Line([gridSize * i, 0, gridSize * i, gridHeight], lineOption));
   }
   // second loop for horizontal line
-  for(var i = Math.ceil(gridHeight/gridSize); i--;){
-    oGridGroup.add( new fabric.Line([0, gridSize*i, gridWidth, gridSize*i], lineOption) );
+  for (var i = Math.ceil(gridHeight / gridSize); i--;) {
+    oGridGroup.add(new fabric.Line([0, gridSize * i, gridWidth, gridSize * i], lineOption));
   }
 
   beamTop.fabric.grid = oGridGroup;
@@ -117,10 +128,12 @@ beamTop.drawGrid = function() {
 
 beamTop.resize = function() {
   beamTop.calculateBattleFieldDims();
-  beamTop.fabric.background.set({top: beamTop.battlfield.dims.y0,
-  left: beamTop.battlfield.dims.x0,
-  width:  beamTop.battlfield.dims.width,
-  height: beamTop.battlfield.dims.height});
+  beamTop.fabric.background.set({
+    top: beamTop.battlfield.dims.y0,
+    left: beamTop.battlfield.dims.x0,
+    width: beamTop.battlfield.dims.width,
+    height: beamTop.battlfield.dims.height
+  });
   beamTop.canvas.remove(beamTop.fabric.grid);
   beamTop.drawGrid();
   beamTop.canvas.renderAll();
@@ -128,14 +141,13 @@ beamTop.resize = function() {
 
 
 
-
 $(function() {
 
-$('#gridRatio-control').on('input',function() {
-  var gridRatio = $(this).val();
-  beamTopCfg.tileRatio = gridRatio/1000;
-  beamTop.resize();
-});
+  $('#gridRatio-control').on('input', function() {
+    var gridRatio = $(this).val();
+    beamTopCfg.tileRatio = gridRatio / 1000;
+    beamTop.resize();
+  });
 
   beamTop.init();
 });
