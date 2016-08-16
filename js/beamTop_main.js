@@ -96,7 +96,8 @@ beamTop.drawGrid = function() {
   // to manipulate grid after creation
   var oGridGroup = new fabric.Group([], {
     left: gridPosX,
-    top: gridPosY
+    top: gridPosY,
+    hasControls: false
   });
 
 
@@ -147,6 +148,19 @@ $(function() {
     var gridRatio = $(this).val();
     beamTopCfg.tileRatio = gridRatio / 1000;
     beamTop.resize();
+  });
+
+  $('#hide-grid-btn').on('click', function() {
+    var visible = !beamTop.fabric.grid.visible;
+
+    if (visible == false) {
+      beamTop.canvas.setActiveObject(beamTop.fabric.background);
+    } else {
+      beamTop.canvas.setActiveObject(beamTop.fabric.grid);
+    }
+
+    beamTop.fabric.grid.visible = visible;
+    beamTop.canvas.renderAll();
   });
 
   beamTop.init();
