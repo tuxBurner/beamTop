@@ -7,11 +7,11 @@ var beamTopCfg = {
   tileSize: 4,
   tileRatio: 4,
   tools : {
-  /*  lineOne : {
+   lineOne : {
       img : 'images/tools/lineone.png',
       width: 2,
       height: 4
-    },*/
+    },
     lineTwo : {
       img:  'images/tools/linetwo.png',
       width: 2,
@@ -81,40 +81,47 @@ beamTop.drawStuff = function() {
   for(var toolsIdx in beamTopCfg.tools) {
     beamTop.fabric.tools = {};
 
-    var tool = beamTopCfg.tools[toolsIdx];
-    fabric.Image.fromURL(tool.img, function(oImg) {
-
-     var toolDims = beamTop.calcToolSize(toolsIdx);
-
-      oImg.set({
-        top: beamTop.battlfield.dims.y0,
-        left: beamTop.battlfield.dims.x0,
-        width: toolDims.width,
-        height: toolDims.height,
-        visible: false,
-        hasControls: true,
-        hasBorders: true,
-        selectable: true,
-        evented: true,
-        centeredRotation: true
-      });
-
-      oImg.setControlsVisibility({
-         mt: false,
-         mb: false,
-         ml: false,
-         mr: false,
-         bl: false,
-         br: false,
-         tl: false,
-         tr: false,
-         mtr: true
-      });
-
-      beamTop.fabric.tools[toolsIdx] = oImg;
-      beamTop.canvas.add(oImg);
-    });
+    beamTop.addTool(toolsIdx);
   }
+}
+
+beamTop.addTool = function(toolName) {
+  var tool = beamTopCfg.tools[toolName];
+  fabric.Image.fromURL(tool.img, function(oImg) {
+
+   var toolDims = beamTop.calcToolSize(toolName);
+
+    oImg.set({
+      top: beamTop.battlfield.dims.y0,
+      left: beamTop.battlfield.dims.x0,
+      width: toolDims.width,
+      height: toolDims.height,
+      visible: false,
+      hasControls: true,
+      hasBorders: true,
+      selectable: true,
+      evented: true,
+      centeredRotation: true,
+      padding: 20,
+      borderColor: '#34d262',
+      cornerColor: '#34d262'
+    });
+
+    oImg.setControlsVisibility({
+       mt: false,
+       mb: false,
+       ml: false,
+       mr: false,
+       bl: false,
+       br: false,
+       tl: false,
+       tr: false,
+       mtr: true
+    });
+
+    beamTop.fabric.tools[toolName] = oImg;
+    beamTop.canvas.add(oImg);
+  });
 }
 
 //canvas.clear().renderAll();
@@ -221,8 +228,13 @@ beamTop.calcToolSize = function(toolName) {
 }
 
 beamTop.selectTool = function(toolName) {
+
+    var currentTool = beamTop.currentTool;
+    if(currentTool !== null && currentTool !== undefined) {
+      beamTop.currentTool.visible = false;
+    }
+
   if(toolName === 'deleteTool') {
-    beamTop.currentTool.visible = false;
     beamTop.currentTool = null;
   } else {
     beamTop.currentTool = beamTop.fabric.tools[toolName];
