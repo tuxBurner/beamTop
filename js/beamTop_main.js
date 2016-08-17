@@ -12,6 +12,11 @@ var beamTopCfg = {
       width: 2,
       height: 4
     },
+    cornerOne : {
+       img : 'images/tools/cornerone.png',
+       width: 4,
+       height: 4
+     },
     lineTwo : {
       img:  'images/tools/linetwo.png',
       width: 2,
@@ -236,6 +241,7 @@ beamTop.selectTool = function(toolName) {
 
   if(toolName === 'deleteTool') {
     beamTop.currentTool = null;
+    canvas.deactivateAll().renderAll();
   } else {
     beamTop.currentTool = beamTop.fabric.tools[toolName];
     beamTop.currentTool.visible = true;
