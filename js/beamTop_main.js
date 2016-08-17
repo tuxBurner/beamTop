@@ -5,7 +5,19 @@ var beamTopCfg = {
     height: 90
   },
   tileSize: 4,
-  tileRatio: 4
+  tileRatio: 4,
+  tools : {
+  /*  lineOne : {
+      img : 'images/tools/lineone.png',
+      width: 2,
+      height: 4
+    },*/
+    lineTwo : {
+      img:  'images/tools/linetwo.png',
+      width: 2,
+      height: 8
+    }
+  }
 }
 
 
@@ -17,6 +29,7 @@ beamTop.init = function() {
   }
 
   beamTop.resizeCanvas();
+  beamTop.addToolsButtons();
 };
 
 beamTop.resizeCanvas = function() {
@@ -64,6 +77,44 @@ beamTop.drawStuff = function() {
     beamTop.canvas.add(oImg);
     beamTop.drawGrid();
   });
+
+  for(var toolsIdx in beamTopCfg.tools) {
+    beamTop.fabric.tools = {};
+
+    var tool = beamTopCfg.tools[toolsIdx];
+    fabric.Image.fromURL(tool.img, function(oImg) {
+
+     var toolDims = beamTop.calcToolSize(toolsIdx);
+
+      oImg.set({
+        top: beamTop.battlfield.dims.y0,
+        left: beamTop.battlfield.dims.x0,
+        width: toolDims.width,
+        height: toolDims.height,
+        visible: false,
+        hasControls: true,
+        hasBorders: true,
+        selectable: true,
+        evented: true,
+        centeredRotation: true
+      });
+
+      oImg.setControlsVisibility({
+         mt: false,
+         mb: false,
+         ml: false,
+         mr: false,
+         bl: false,
+         br: false,
+         tl: false,
+         tr: false,
+         mtr: true
+      });
+
+      beamTop.fabric.tools[toolsIdx] = oImg;
+      beamTop.canvas.add(oImg);
+    });
+  }
 }
 
 //canvas.clear().renderAll();
@@ -127,6 +178,12 @@ beamTop.drawGrid = function() {
 
 }
 
+beamTop.makeToolActive = function() {
+  if(beamTop.currentTool !== null && beamTop.currentTool !== undefined) {
+    beamTop.canvas.setActiveObject(beamTop.currentTool);
+  }
+}
+
 beamTop.resize = function() {
   beamTop.calculateBattleFieldDims();
   beamTop.fabric.background.set({
@@ -137,10 +194,56 @@ beamTop.resize = function() {
   });
   beamTop.canvas.remove(beamTop.fabric.grid);
   beamTop.drawGrid();
+  beamTop.resizeTools();
+  beamTop.makeToolActive();
+  beamTop.canvas.renderAll();
+}
+
+beamTop.resizeTools = function() {
+  for(toolsIdx in beamTop.fabric.tools) {
+    var toolImg = beamTop.fabric.tools[toolsIdx];
+    var toolDims = beamTop.calcToolSize(toolsIdx);
+    toolImg.set({
+      width: toolDims.width,
+      height: toolDims.height
+    });
+  }
+}
+
+beamTop.calcToolSize = function(toolName) {
+  var tool = beamTopCfg.tools[toolName];
+  var ratio = beamTopCfg.tileRatio;
+  var result = {
+    height : tool.height * ratio,
+    width  : tool.width * ratio
+  };
+  return result;
+}
+
+beamTop.selectTool = function(toolName) {
+  if(toolName === 'deleteTool') {
+    beamTop.currentTool.visible = false;
+    beamTop.currentTool = null;
+  } else {
+    beamTop.currentTool = beamTop.fabric.tools[toolName];
+    beamTop.currentTool.visible = true;
+    beamTop.canvas.setActiveObject(beamTop.currentTool);
+  }
+
   beamTop.canvas.renderAll();
 }
 
 
+beamTop.addToolsButtons = function() {
+  for(toolsIdx in beamTopCfg.tools) {
+    $('#toolsSelect').append('<option value="'+toolsIdx+'">'+toolsIdx+'</option>');
+  }
+
+  $('#toolsSelect').on('change', function() {
+    var toolName = $(this).val();
+    beamTop.selectTool(toolName);
+  });
+}
 
 $(function() {
 
@@ -152,14 +255,8 @@ $(function() {
 
   $('#hide-grid-btn').on('click', function() {
     var visible = !beamTop.fabric.grid.visible;
-
-    if (visible == false) {
-      beamTop.canvas.setActiveObject(beamTop.fabric.background);
-    } else {
-      beamTop.canvas.setActiveObject(beamTop.fabric.grid);
-    }
-
     beamTop.fabric.grid.visible = visible;
+    beamTop.makeToolActive();
     beamTop.canvas.renderAll();
   });
 
